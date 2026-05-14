@@ -1,6 +1,11 @@
 D:\hema\src\main\java\com\finance\manager\entity\Transaction.java
 D:\hema\src\main\java\com\finance\manager\repository\BudgetRepository.java
+D:\hema\src\main\java\com\finance\manager\controller\AuthController.java
+D:\hema\src\main\java\com\finance\manager\repository\UserRepository.java
 D:\hema\src\main\java\com\finance\manager\FinanceManagerApplication.java
 D:\hema\src\main\java\com\finance\manager\controller\FinanceController.java
+D:\hema\src\main\java\com\finance\manager\entity\User.java
+D:\hema\src\main\java\com\finance\manager\repository\SavingsGoalRepository.java
 D:\hema\src\main\java\com\finance\manager\repository\TransactionRepository.java
 D:\hema\src\main\java\com\finance\manager\entity\Budget.java
+D:\hema\src\main\java\com\finance\manager\entity\SavingsGoal.java

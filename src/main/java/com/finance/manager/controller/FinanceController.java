@@ -1,8 +1,10 @@
 package com.finance.manager.controller;
 
 import com.finance.manager.entity.Budget;
+import com.finance.manager.entity.SavingsGoal;
 import com.finance.manager.entity.Transaction;
 import com.finance.manager.repository.BudgetRepository;
+import com.finance.manager.repository.SavingsGoalRepository;
 import com.finance.manager.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +24,20 @@ public class FinanceController {
 
     @Autowired
     private BudgetRepository budgetRepository;
+    
+    @Autowired
+    private SavingsGoalRepository savingsGoalRepository;
 
     // --- Transactions ---
 
     @GetMapping("/transactions")
-    public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
+    public List<Transaction> getAllTransactions(@RequestHeader("User-Id") Long userId) {
+        return transactionRepository.findByUserId(userId);
     }
 
     @PostMapping("/transactions")
-    public Transaction addTransaction(@RequestBody Transaction transaction) {
+    public Transaction addTransaction(@RequestHeader("User-Id") Long userId, @RequestBody Transaction transaction) {
+        transaction.setUserId(userId);
         return transactionRepository.save(transaction);
     }
 
@@ -43,12 +49,13 @@ public class FinanceController {
     // --- Budgets ---
 
     @GetMapping("/budgets")
-    public List<Budget> getAllBudgets() {
-        return budgetRepository.findAll();
+    public List<Budget> getAllBudgets(@RequestHeader("User-Id") Long userId) {
+        return budgetRepository.findByUserId(userId);
     }
 
     @PostMapping("/budgets")
-    public Budget addBudget(@RequestBody Budget budget) {
+    public Budget addBudget(@RequestHeader("User-Id") Long userId, @RequestBody Budget budget) {
+        budget.setUserId(userId);
         return budgetRepository.save(budget);
     }
 
@@ -56,12 +63,38 @@ public class FinanceController {
     public void deleteBudget(@PathVariable Long id) {
         budgetRepository.deleteById(id);
     }
+    
+    // --- Savings Goals ---
+    
+    @GetMapping("/savings")
+    public List<SavingsGoal> getAllSavingsGoals(@RequestHeader("User-Id") Long userId) {
+        return savingsGoalRepository.findByUserId(userId);
+    }
+
+    @PostMapping("/savings")
+    public SavingsGoal addSavingsGoal(@RequestHeader("User-Id") Long userId, @RequestBody SavingsGoal goal) {
+        goal.setUserId(userId);
+        return savingsGoalRepository.save(goal);
+    }
+
+    @DeleteMapping("/savings/{id}")
+    public void deleteSavingsGoal(@PathVariable Long id) {
+        savingsGoalRepository.deleteById(id);
+    }
+    
+    @PutMapping("/savings/{id}/add")
+    public SavingsGoal addAmountToSavings(@PathVariable Long id, @RequestBody Map<String, BigDecimal> payload) {
+        SavingsGoal goal = savingsGoalRepository.findById(id).orElseThrow();
+        BigDecimal current = goal.getSavedAmount() != null ? goal.getSavedAmount() : BigDecimal.ZERO;
+        goal.setSavedAmount(current.add(payload.get("amount")));
+        return savingsGoalRepository.save(goal);
+    }
 
     // --- Summary ---
 
     @GetMapping("/summary")
-    public Map<String, Object> getSummary() {
-        List<Transaction> transactions = transactionRepository.findAll();
+    public Map<String, Object> getSummary(@RequestHeader("User-Id") Long userId) {
+        List<Transaction> transactions = transactionRepository.findByUserId(userId);
         
         BigDecimal totalIncome = BigDecimal.ZERO;
         BigDecimal totalExpense = BigDecimal.ZERO;

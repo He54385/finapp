@@ -6,9 +6,35 @@
     <title>Finance Manager - Personal Wealth</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="app-container">
+    <!-- Authentication Overlay -->
+    <div id="authOverlay" class="auth-overlay active">
+        <div class="auth-box">
+            <h2>Welcome to FinManage</h2>
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+            </div>
+            
+            <form id="loginForm" class="auth-form active">
+                <input type="text" id="l-username" placeholder="Username" required>
+                <input type="password" id="l-password" placeholder="Password" required>
+                <button type="submit" class="primary-btn full-width">Login</button>
+            </form>
+            
+            <form id="registerForm" class="auth-form">
+                <input type="text" id="r-username" placeholder="Username" required>
+                <input type="password" id="r-password" placeholder="Password" required>
+                <button type="submit" class="primary-btn full-width">Register</button>
+            </form>
+            <p id="authError" class="auth-error"></p>
+        </div>
+    </div>
+
+    <div class="app-container" id="appContainer" style="display: none;">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
@@ -18,17 +44,25 @@
                 <button class="nav-btn active" data-target="dashboard">Dashboard</button>
                 <button class="nav-btn" data-target="transactions">Transactions</button>
                 <button class="nav-btn" data-target="budget">Budget</button>
+                <button class="nav-btn" data-target="savings">Savings Goals</button>
+                <button class="nav-btn" data-target="reports">Reports</button>
             </nav>
+            <div class="sidebar-footer">
+                <button class="nav-btn text-danger" onclick="logout()">Logout</button>
+            </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <header class="topbar">
-                <h1>Welcome Back!</h1>
+                <h1 id="greeting">Welcome Back!</h1>
                 <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="Profile">
+                    <img id="userAvatar" src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="Profile">
                 </div>
             </header>
+
+            <!-- Alerts Container -->
+            <div id="alertsContainer" class="alerts-container"></div>
 
             <!-- Dashboard View -->
             <section id="dashboard" class="view-section active">
@@ -74,6 +108,17 @@
                     <h2>Manage Transactions</h2>
                     <button class="primary-btn" onclick="openModal('transactionModal')">+ Add Transaction</button>
                 </div>
+                
+                <!-- Search & Filter -->
+                <div class="filters">
+                    <input type="text" id="searchTx" placeholder="Search by description or category..." onkeyup="filterTransactions()">
+                    <select id="filterType" onchange="filterTransactions()">
+                        <option value="ALL">All Types</option>
+                        <option value="INCOME">Income</option>
+                        <option value="EXPENSE">Expense</option>
+                    </select>
+                </div>
+
                 <div class="table-container">
                     <table id="transactionsTable">
                         <thead>
@@ -106,6 +151,8 @@
                                 <th>Month/Year</th>
                                 <th>Category</th>
                                 <th>Budget Amount</th>
+                                <th>Spent</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -115,10 +162,39 @@
                     </table>
                 </div>
             </section>
+            
+            <!-- Savings Goals View -->
+            <section id="savings" class="view-section">
+                <div class="section-header">
+                    <h2>Savings Goals</h2>
+                    <button class="primary-btn" onclick="openModal('savingsModal')">+ New Goal</button>
+                </div>
+                <div class="goals-container" id="goalsContainer">
+                    <!-- Inserted via JS -->
+                </div>
+            </section>
+            
+            <!-- Reports View -->
+            <section id="reports" class="view-section">
+                <div class="section-header">
+                    <h2>Financial Reports</h2>
+                </div>
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <h3>Income vs Expenses</h3>
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h3>Expenses by Category</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
     <!-- Modals -->
+    <!-- Transaction Modal -->
     <div id="transactionModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('transactionModal')">&times;</span>
@@ -152,6 +228,7 @@
         </div>
     </div>
 
+    <!-- Budget Modal -->
     <div id="budgetModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('budgetModal')">&times;</span>
@@ -170,6 +247,29 @@
                     <input type="month" id="b-monthYear" required>
                 </div>
                 <button type="submit" class="primary-btn full-width">Save Budget</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Savings Modal -->
+    <div id="savingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('savingsModal')">&times;</span>
+            <h2>Add Savings Goal</h2>
+            <form id="savingsForm">
+                <div class="form-group">
+                    <label>Goal Name</label>
+                    <input type="text" id="s-name" placeholder="e.g., New Car, Vacation" required>
+                </div>
+                <div class="form-group">
+                    <label>Target Amount</label>
+                    <input type="number" id="s-target" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Target Date</label>
+                    <input type="date" id="s-date" required>
+                </div>
+                <button type="submit" class="primary-btn full-width">Create Goal</button>
             </form>
         </div>
     </div>

@@ -1,6 +1,11 @@
 com\finance\manager\repository\TransactionRepository.class
-com\finance\manager\entity\Budget.class
 com\finance\manager\repository\BudgetRepository.class
+com\finance\manager\entity\User.class
 com\finance\manager\entity\Transaction.class
 com\finance\manager\controller\FinanceController.class
+com\finance\manager\repository\UserRepository.class
 com\finance\manager\FinanceManagerApplication.class
+com\finance\manager\controller\AuthController.class
+com\finance\manager\repository\SavingsGoalRepository.class
+com\finance\manager\entity\SavingsGoal.class
+com\finance\manager\entity\Budget.class

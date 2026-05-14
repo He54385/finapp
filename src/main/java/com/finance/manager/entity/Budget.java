@@ -15,6 +15,8 @@ public class Budget {
     private String category;
     private BigDecimal amount;
     private String monthYear; // Format: YYYY-MM
+    
+    private Long userId;
 
     public Budget() {}
 
@@ -29,4 +31,7 @@ public class Budget {
     
     public String getMonthYear() { return monthYear; }
     public void setMonthYear(String monthYear) { this.monthYear = monthYear; }
+    
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }
