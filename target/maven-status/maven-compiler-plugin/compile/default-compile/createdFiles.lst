@@ -1,0 +1,6 @@
+com\finance\manager\repository\TransactionRepository.class
+com\finance\manager\entity\Budget.class
+com\finance\manager\repository\BudgetRepository.class
+com\finance\manager\entity\Transaction.class
+com\finance\manager\controller\FinanceController.class
+com\finance\manager\FinanceManagerApplication.class

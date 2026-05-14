@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Manager - Personal Wealth</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>FinManage</h2>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+                <button class="nav-btn" data-target="transactions">Transactions</button>
+                <button class="nav-btn" data-target="budget">Budget</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Welcome Back!</h1>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="Profile">
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="dashboard" class="view-section active">
+                <div class="summary-cards">
+                    <div class="card income-card">
+                        <h3>Total Income</h3>
+                        <p class="amount" id="totalIncome">$0.00</p>
+                    </div>
+                    <div class="card expense-card">
+                        <h3>Total Expenses</h3>
+                        <p class="amount" id="totalExpense">$0.00</p>
+                    </div>
+                    <div class="card savings-card">
+                        <h3>Net Savings</h3>
+                        <p class="amount" id="totalSavings">$0.00</p>
+                    </div>
+                </div>
+                
+                <div class="recent-transactions-dashboard">
+                    <h3>Recent Transactions</h3>
+                    <div class="table-container">
+                        <table id="recentTransactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Inserted via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions View -->
+            <section id="transactions" class="view-section">
+                <div class="section-header">
+                    <h2>Manage Transactions</h2>
+                    <button class="primary-btn" onclick="openModal('transactionModal')">+ Add Transaction</button>
+                </div>
+                <div class="table-container">
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Inserted via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Budget View -->
+            <section id="budget" class="view-section">
+                <div class="section-header">
+                    <h2>Manage Budgets</h2>
+                    <button class="primary-btn" onclick="openModal('budgetModal')">+ Add Budget</button>
+                </div>
+                <div class="table-container">
+                    <table id="budgetsTable">
+                        <thead>
+                            <tr>
+                                <th>Month/Year</th>
+                                <th>Category</th>
+                                <th>Budget Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Inserted via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('transactionModal')">&times;</span>
+            <h2>Add New Transaction</h2>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="t-type" required>
+                        <option value="INCOME">Income</option>
+                        <option value="EXPENSE">Expense</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="t-amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="t-category" placeholder="e.g., Salary, Food, Rent" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="t-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="t-description" placeholder="Brief description">
+                </div>
+                <button type="submit" class="primary-btn full-width">Save Transaction</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="budgetModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('budgetModal')">&times;</span>
+            <h2>Add New Budget</h2>
+            <form id="budgetForm">
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="b-category" placeholder="e.g., Food, Entertainment" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="b-amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Month/Year</label>
+                    <input type="month" id="b-monthYear" required>
+                </div>
+                <button type="submit" class="primary-btn full-width">Save Budget</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
